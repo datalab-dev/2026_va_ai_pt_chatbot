@@ -1,5 +1,5 @@
 [workspace]
-authors = ["Federico Aprile <fgaprile@ucdavis.edu>"]
+authors = ["Federico Aprile <fgaprile@ucdavis.edu>", "Wesley Brooks <wbrooks@ucdavis.edu>"]
 channels = ["conda-forge"]
 name = "libbot_bert"
 platforms = ["linux-64"]
@@ -9,29 +9,33 @@ version = "0.1.0"
 
 [tasks.ollama-serve]
 cmd = "ollama serve"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [tasks.ollama-pull]
 cmd = "ollama pull"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [tasks.ollama-list]
 cmd = "ollama list"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [tasks.ollama-run]
 cmd = "ollama run"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [tasks.ollama-rm]
 cmd = "ollama rm"
-env.OLLAMA_MODELS = "/dsl/libbot/data/ollama_cache"
+env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
+
+[system-requirements]
+cuda = "12.4"
 
 [dependencies]
+cuda = ">=12.6.2,<13"
+pytorch = {version=">=2.5.1,<3", build="*cuda*"}
 python = "==3.10"
 numpy = "*"
 pandas = "*"
-pytorch = "*"
 transformers = "*"
 sentence-transformers = "*"
 pyarrow = "<14"
@@ -52,6 +56,9 @@ jupyter = ">=1.1.1,<2"
 ipykernel = ">=7.2.0,<8"
 nltk = ">=3.9.3,<4"
 numactl = ">=2.0.18,<3"
+r = ">=4.5,<4.6"
+r-jsonlite = ">=2.0.0,<3"
+r-tidyverse = ">=2.0.0,<3"
 
 
 

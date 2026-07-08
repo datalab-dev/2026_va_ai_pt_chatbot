@@ -28,19 +28,19 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-os.environ.setdefault("HF_HOME", "/dsl/libbot/data/huggingface_cache")
-os.environ.setdefault("SENTENCE_TRANSFORMERS_HOME", "/dsl/libbot/data/huggingface_cache")
+os.environ.setdefault("HF_HOME", "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/huggingface_cache")
+os.environ.setdefault("SENTENCE_TRANSFORMERS_HOME", "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/huggingface_cache")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from libbot_pkg.config import settings  # noqa: E402  (needs repo root on path)
 
 # ---------- Defaults ----------
-INPUT_CSV = "/dsl/libbot/data/text_full_libguide_new.csv"
+INPUT_CSV = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/coul-corpus.csv"
 OUTPUT_CSV = "/dsl/libbot/data/combined_text_full_libguide_new.csv"
 OUTPUT_PARQUET = "/dsl/libbot/data/combined_text_full_libguide_new.parquet"
 OUTPUT_EMBEDDINGS = "/dsl/libbot/data/embeddings_qwen_new.npy"
 CHROMA_DB_PATH = "/dsl/libbot/data/chroma_db_new"
-ENCODE_BATCH_SIZE = 16
+ENCODE_BATCH_SIZE = 1
 CHROMA_BATCH_SIZE = 1000
 # ------------------------------
 
@@ -66,26 +66,28 @@ def generate_embeddings(texts: list[str]) -> np.ndarray:
     import torch
     from sentence_transformers import SentenceTransformer
 
-    torch.set_num_threads(settings.torch_num_threads)
-    log.info("Loading embedding model %s ...", settings.model_name)
-    model = SentenceTransformer(
-        settings.model_name,
-        device="cpu",
-        model_kwargs={"torch_dtype": torch.float32},
-        tokenizer_kwargs={"padding_side": "left"},
-        trust_remote_code=True,
-    )
-    log.info("Encoding %d documents (batch_size=%d) ...", len(texts), ENCODE_BATCH_SIZE)
-    started = time.monotonic()
-    embeddings = model.encode(
-        texts,
-        batch_size=ENCODE_BATCH_SIZE,
-        show_progress_bar=True,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-    )
-    log.info("Encoded in %.0fs, shape=%s", time.monotonic() - started, embeddings.shape)
-    return embeddings.astype(np.float32)
+
+    with torch.inference_mode():
+        torch.set_num_threads(settings.torch_num_threads)
+        log.info("Loading embedding model %s ...", settings.model_name)
+        model = SentenceTransformer(
+            settings.model_name,
+            device="cpu",
+            model_kwargs={"torch_dtype": torch.float32},
+            tokenizer_kwargs={"padding_side": "left"},
+            trust_remote_code=True,
+        )
+        log.info("Encoding %d documents (batch_size=%d) ...", len(texts), ENCODE_BATCH_SIZE)
+        started = time.monotonic()
+        embeddings = model.encode(
+            texts,
+            batch_size=ENCODE_BATCH_SIZE,
+            show_progress_bar=True,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+        )
+        log.info("Encoded in %.0fs, shape=%s", time.monotonic() - started, embeddings.shape)
+        return embeddings.astype(np.float32)
 
 
 def build_collection(df: pd.DataFrame, embeddings: np.ndarray, db_path: str):
