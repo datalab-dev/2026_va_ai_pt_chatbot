@@ -40,7 +40,7 @@ OUTPUT_CSV = "/dsl/libbot/data/combined_text_full_libguide_new.csv"
 OUTPUT_PARQUET = "/dsl/libbot/data/combined_text_full_libguide_new.parquet"
 OUTPUT_EMBEDDINGS = "/dsl/libbot/data/embeddings_qwen_new.npy"
 CHROMA_DB_PATH = "/dsl/libbot/data/chroma_db_new"
-ENCODE_BATCH_SIZE = 1
+ENCODE_BATCH_SIZE = 8
 CHROMA_BATCH_SIZE = 1000
 # ------------------------------
 
@@ -66,13 +66,14 @@ def generate_embeddings(texts: list[str]) -> np.ndarray:
     import torch
     from sentence_transformers import SentenceTransformer
 
+    print(max(len(t) for t in texts))
 
     with torch.inference_mode():
         torch.set_num_threads(settings.torch_num_threads)
         log.info("Loading embedding model %s ...", settings.model_name)
         model = SentenceTransformer(
             settings.model_name,
-            device="cpu",
+            device="cuda",
             model_kwargs={"torch_dtype": torch.float32},
             tokenizer_kwargs={"padding_side": "left"},
             trust_remote_code=True,
@@ -112,9 +113,9 @@ def build_collection(df: pd.DataFrame, embeddings: np.ndarray, db_path: str):
 
     ids, metadatas = [], []
     for row in df.itertuples(index=False):
-        ids.append(str(int(row.local_id)))
+        ids.append(str(row.parent_id) + "_" + str(int(row.local_id)))
         metadatas.append({
-            "parent_id": str(int(row.parent_id)),
+            "parent_id": str(row.parent_id),
             "text": as_str(row.text),
             "libguide_title": as_str(row.libguide_title),
             "libguide_url": as_str(row.libguide_url),
