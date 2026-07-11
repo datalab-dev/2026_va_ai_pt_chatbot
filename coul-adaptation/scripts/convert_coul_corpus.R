@@ -9,6 +9,11 @@ my_files = dir(corpus_dir)
 
 my_dfs = lapply(file.path(corpus_dir, my_files), populate_df)
 
-big_df = bind_rows(my_dfs)
+big_df = bind_rows(my_dfs) |>
+  subset(!(parent_id %in% c("GKOrukffRyFJ.json", "XgBicvlbfUry.json")))
+
+#big_df |> group_by(parent_id) |> tally() |> arrange(desc(n)) |> print(n=100)
+#big_df |> group_by(parent_id) |> summarize(n = max(nchar(text))) |> arrange(desc(n)) |> print(n=100)
+
 
 write_csv(big_df, file = "coul-adaptation/output/coul-corpus.csv")
