@@ -9,31 +9,31 @@ version = "0.1.0"
 
 [tasks.ollama-serve]
 cmd = "ollama serve"
-env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
+env.OLLAMA_MODELS = "/dsl/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [tasks.ollama-pull]
 cmd = "ollama pull"
-env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
+env.OLLAMA_MODELS = "/dsl/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [tasks.ollama-list]
 cmd = "ollama list"
-env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
+env.OLLAMA_MODELS = "/dsl/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [tasks.ollama-run]
 cmd = "ollama run"
-env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
+env.OLLAMA_MODELS = "/dsl/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [tasks.ollama-rm]
 cmd = "ollama rm"
-env.OLLAMA_MODELS = "/home/wbrooks/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
+env.OLLAMA_MODELS = "/dsl/2026_va_ai_pt_chatbot/coul-adaptation/output/ollama_cache"
 
 [system-requirements]
-cuda = "13"
+#cuda = "13"
 
 [dependencies]
-cuda = "*"
-pytorch = {version="*", build="*cuda*"}
-#pytorch = "*"
+#cuda = "*"
+#pytorch = {version="*", build="*cuda*"}
+pytorch = "*"
 python = "*"
 numpy = "*"
 pandas = "*"
