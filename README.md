@@ -10,7 +10,8 @@
 ## Current Contributors
 
 -   **Project Lead**: Dr. Carl Stahmer
--   **Lead Developer & Maintainer**: Federico G. Aprile
+-   **Lead Developer**: Federico G. Aprile
+-   **Maintainer**: Wesley Brooks
 -   **UX/UI Designer**: Leon Tanguay
 
 <br>
@@ -111,6 +112,50 @@ This project uses `Pixi` for environment and dependency management on a Linux x8
 ### [**Dedicated `models/` README**](https://github.com/datalab-dev/ucd_library_libguide_chatbot/blob/main/docs/ollama.md)
 
 <br>
+
+## Getting Started
+On October 22 2026, Wesley Brooks copied the following instructions from Slack, which indicate how to get the LibBot up and running on a local computer (e.g., his MacBook Air, using the GPU [aka MPS] for inference):
+
+> Hi Natalia and Sabrina! I've done some work to make the LibBot more adaptable to running on different hardware. It is now at the point where I can run tests at the command line but I am still working to get the web chat interface running on my computer. The biggest difference is that I have created a single file that controls things like where the files and databases should be found, so we won't have to figure out what should be in the environment file and what should be entered at the command line.
+> 
+> In any case, I am now going to check in my updates to a branch of the Github repository called wb-parameterize.
+> 
+> I'll send another update once I have finished checking in that code. Then you should be able to pull it from Github and catch up to the point I'm at. (edited) 
+> Sabrina Cheung  [10:48 AM]
+> Thank you so much for all your help Wesley!
+> Wesley  [11:06 AM]
+> OK, I've checked in my code. You can get it by going to the project folder and running these at the command line:
+> 
+> git fetch
+> 
+> git switch -c wb-parameterize --track origin/wb-parameterize
+> 
+> git pull(edited)
+> Wesley  [11:12 AM]
+> That should cause Git to switch to a new branch on your computer called wb-parameterize that tracks the branch wb-parameterize from the Github repository. Then you are ready to try building the database that the chatbot uses to provide answers (this may take an hour or so, depending on your computer's processing power):
+> 
+> pixi install
+> pixi run python pipeline/build_chromadb.py[11:15 AM]After that you can test the system's basic functionality by making a query to the LLM and seeing whether it gives you responses or error messages:
+> 
+> pixi run python test_retriever.py "put some question here in quotes"
+> [11:18 AM]If you can confirm that is all working, then I think your next step is to look into the file libbot_pkg/api.py and find the function called build_context_prompt(). Read through its code and try to understand how it builds a query by combining the current input with past messages in the same conversation. I think this is where you will be working to give the bot more or better context, which can improve its responses.
+> Wesley  [3:40 PM]
+> I just realized that these changes weren't on the Github repository yet. I just pushed them. I also figured out how to get the chatbot interface working
+> [3:41 PM]once you have checked out the wb-parameterize branch, everything is ready to work but the process of starting the chatbot takes a few steps:
+> Wesley  [3:48 PM]
+> 
+> 1. Start ollama in a terminal window. cd into the project folder and run the command `pixi run ollama-serve`.
+> 2. (This only has to be done once.) Install the chat model from the internet. From the a separate terminal window, cd to your project folder and run the command `pixi run ollama-pull gemma3:4b`.
+> 3.Start the LibBot. In the same terminal as step 2, run the command `pixi run python -m libbot_pkg`.
+> 
+> 
+> The final step takes a few seconds. You'll know the LibBot is up and ready to test when you see a message in the terminal like
+> 
+> INFO:     Application startup complete.
+> INFO:     Uvicorn running on http://0.0.0.0:8075 (Press CTRL+C to quit)
+
+> Then open a web browser and enter the address localhost:8075. You should see the LibBot chat, which you can try prompting with questions. Let me know how this goes for you! (edited)
+
 
 ---
 
